@@ -40,7 +40,7 @@ jobs:
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
 
   - script: |
-      python delete_resources.py
+      python del-az-res.py
     displayName: 'Run Azure Python Script'
     env:
       AZURE_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
