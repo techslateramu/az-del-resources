@@ -3,7 +3,9 @@ from azure.identity import DefaultAzureCredential
 from azure.mgmt.resource import ResourceManagementClient
 
 # Replace these with your own values
-subscription_id = os.environ.get('AZURE_SUBSCRIPTION_ID')
+# subscription_id = os.environ.get('AZURE_SUBSCRIPTION_ID')
+subscription_id = "d9d24cf2-e4f1-4942-958f-a6bd839a3f1e"
+
 
 # Create a ResourceManagementClient
 resource_client = ResourceManagementClient(DefaultAzureCredential(), subscription_id)
