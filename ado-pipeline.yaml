@@ -1,0 +1,46 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: common
+
+
+jobs:
+- job: DeleteResources
+  displayName: 'Delete Azure Resources'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.x'
+      addToPath: true
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install azure-mgmt-resource
+      pip install azure-identity
+    displayName: 'Install Azure Python SDK'
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: $(az_sc_name) # Replace with your service connection name
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        az account show
+        az login --service-principal -u $(ARM_CLIENT_ID) -p $(ARM_CLIENT_SECRET) --tenant $(ARM_TENANT_ID)
+    displayName: 'Azure CLI Login'
+    env:
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+
+  - script: |
+      python delete_resources.py
+    displayName: 'Run Azure Python Script'
+    env:
+      AZURE_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
